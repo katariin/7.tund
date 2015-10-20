@@ -1,18 +1,54 @@
 <?php
-        //edit.php
+
+          require_once("../configglobal.php");
+	      $database = "if15_jekavor";
+	function getSingeCarData($edit_id){
+        //edit functions.php
+		$mysqli = new mysqli($GLOBALS[servername], $GLOBALS[server_username], $GLOBALS[server_password], $GLOBALS[database]);
+		$stmt = $mysqli->prepare("SELECT number_plate, color FROM car_plates WHERE id=? AND deleted is NULL");
+		//asendan ? märgi
+		$stmt->bind_param("$i", $edit_id);
+		$stmt->bind_redult($number_plate, $color);
+		$stmt->execute();
 		
-		//id mida muudame
-	    echo $_GET["edit"];
+		//tekitan objekti
+		$car= new Stdclass();
 		
-         //saada kätte kõige uuemad andmed selle id kohta
-		 //numbrimärk ja värv		 
+		//saime ühe rea andmeid
+		if($stmt->fetch()){
+			//saan siin alles kasutada bind_result muutujaid
+			$car->number_plate = $number_plate;
+			$car->color = $color;
+			
+		}else{
+			header("location: table.php");
+				
+		}
+		return $car;
+		
+		$stmt->close();
+		$mysqli->close();
+	}
+	
+	
+	   function updateCar($id, $number_plate, $color){
+	   $mysqli = new mysqli($GLOBALS["servername"], $GLOBALS["server_username"], $GLOBALS["server_password"], $GLOBALS["database"]);
+	   $stmt = $mysqli->prepare("UPDATE car_plates SET number_p0late=?, color=? WHERE id=?");
+	   $stmt->bind_param("ssi", $number_plate, $color, $id);
+	    // kas õnnestus salvestada
+	   
+	    if($stmt->execute()) {
+		   // õnnestus
+		   echo "hurraa";
+		  
+	    }
+	   
+	   $stmt->close();
+		$mysqli->close();
+	   
+	   }
 ?>
 
-<h2>Muuda autod</h2>
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" >
-  <label for="car_plate" >auto nr</label><br>
-  <input id="car_plate" name="number_plate" type="text"><br><br>
-  <label for="color">värv</label><br>
-  <input id="color" name="color" type="text"><br><br>
-  <input type="submit" name="update" value="save">
-  </form>
+
+
+
