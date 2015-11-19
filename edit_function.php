@@ -4,11 +4,11 @@
 	      $database = "if15_jekavor";
 	function getSingeCarData($edit_id){
         //edit functions.php
-		$mysqli = new mysqli($GLOBALS[servername], $GLOBALS[server_username], $GLOBALS[server_password], $GLOBALS[database]);
+		$mysqli = new mysqli($GLOBALS["servername"], $GLOBALS["server_username"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$stmt = $mysqli->prepare("SELECT number_plate, color FROM car_plates WHERE id=? AND deleted is NULL");
 		//asendan ? märgi
 		$stmt->bind_param("$i", $edit_id);
-		$stmt->bind_redult($number_plate, $color);
+		$stmt->bind_result($number_plate, $color);
 		$stmt->execute();
 		
 		//tekitan objekti
